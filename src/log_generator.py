@@ -18,11 +18,11 @@ HOSTS = [
     "WEB-01"
 ]
 
-CITIES = [
-    "Seattle": (47.6062, -112.3321),
+CITIES = {
+    "Seattle": (47.6062, -122.3321),
     "Chicago": (41.8781, -87.6298),
-    "London": (51.5072, -0.1276) 
-]
+    "London": (51.5072, -0.1276)
+}
 
 
 def generate_authentication_logs():
@@ -31,7 +31,9 @@ def generate_authentication_logs():
 
     base_time = datetime.now()
 
+    #
     # Normal Logins
+    #
 
     for i in range(20):
 
@@ -44,136 +46,193 @@ def generate_authentication_logs():
         logs.append({
             "timestamp":
                 (
-                    base_time + 
+                    base_time +
                     timedelta(minutes=i)
                 ).isoformat(),
-            "event": "login_success",
-            "user": random.choice(USERS),
-            "city": city,
-            "latitude": lat,
-            "longitude": lon,
+            "event":
+                "login_success",
+            "user":
+                random.choice(USERS),
+            "city":
+                city,
+            "latitude":
+                lat,
+            "longitude":
+                lon
         })
 
-        # Brute Force Attack
+    #
+    # Brute Force Attack
+    #
 
-        for i in range(6):
-
-            logs.append({
-                "timestamp": 
-                    (
-                        base_time +
-                        timedelta(minutes=30, seconds=i)
-                    ).isoformat(),
-                "event": "login_failed",
-                "user": "jsmith",
-                "ip": "203.0.113.10"
-            })
-
-        # Impossible Travel
+    for i in range(6):
 
         logs.append({
             "timestamp":
                 (
                     base_time +
-                    timedelta(hours=2)
+                    timedelta(minutes=30, seconds=i)
                 ).isoformat(),
-            "event": "login_success",
-            "user": "adoe",
-            "city": "Seattle",
-            "latitude": 47.6062,
-            "longitude": -122.3321,
+            "event":
+                "login_failed",
+            "user":
+                "jsmith",
+            "ip":
+                "203.0.113.10"
         })
 
-        logs.append({
-            "timestamp":
-                (
-                    base_time +
-                    timedelta(hours=2, minutes=10)
-                ).isoformat(),
-            "event": "login_success",
-            "user": "adoe",
-            "city": "London",
-            "latitude": 51.5072,
-            "longitude": -0.1276,
-        }) 
+    #
+    # Impossible Travel
+    #
 
-        # Privilege Escalation
+    logs.append({
+        "timestamp":
+            (
+                base_time +
+                timedelta(hours=2)
+            ).isoformat(),
+        "event":
+            "login_success",
+        "user":
+            "adoe",
+        "city":
+            "Seattle",
+        "latitude":
+            47.6062,
+        "longitude":
+            -122.3321
+    })
 
-        logs.append({
-            "timestamp":
-                (
-                    base_time +
-                    timedelta(hours=3)
-                ).isoformat()
-            "event": "privilege_change",
-            "user": "mjones",
-            "old_role": "user",
-            "new_role": "admin"
-        })
+    logs.append({
+        "timestamp":
+            (
+                base_time +
+                timedelta(hours=2, minutes=10)
+            ).isoformat(),
+        "event":
+            "login_success",
+        "user":
+            "adoe",
+        "city":
+            "London",
+        "latitude":
+            51.5072,
+            "longitude":
+            -0.1276
+    })
 
-        # Admin Account Creation
+    #
+    # Privilege Escalation
+    #
 
-        logs.append({
-            "timestamp": 
-                (
-                    base_time +
-                    timedelta(hours=4)
-                ).isoformat()
-            "event": "account_created",
-            "user": "backup_admin",
-            "role": "admin"
-        })
+    logs.append({
+        "timestamp":
+            (
+                base_time +
+                timedelta(hours=3)
+            ).isoformat(),
+        "event":
+            "privilege_change",
+        "user":
+            "mjones",
+        "old_role":
+            "user",
+        "new_role":
+            "admin"
+    })
 
-        return logs
-    
+    #
+    # Admin Account Creation
+    #
+
+    logs.append({
+        "timestamp":
+            (
+                base_time +
+                timedelta(hours=4)
+            ).isoformat(),
+        "event":
+            "account_created",
+        "user":
+            "backup_admin",
+        "role":
+            "admin"
+    })
+
+    return logs
+
+
 def generate_endpoint_logs():
 
     logs = []
 
     base_time = datetime.now()
 
+    #
     # Normal Processes
+    #
 
     logs.append({
-        "timestamp": base_time.isoformat(),
-        "event": "process_execution",
-        "user": "jsmith",
-        "hostname": "WIN-01",
-        "process_name": "notepad.exe",
-        "comand_line": "notepad.exe"
+        "timestamp":
+            base_time.isoformat(),
+        "event":
+            "process_execution",
+        "user":
+            "jsmith",
+        "hostname":
+            "WIN-01",
+        "process_name":
+            "notepad.exe",
+        "command_line":
+            "notepad.exe"
     })
 
+    #
     # Encoded PowerShell
+    #
 
     logs.append({
-        "timestamp": 
+        "timestamp":
             (
                 base_time +
                 timedelta(minutes=5)
             ).isoformat(),
-        "event": "process_execution",
-        "user": "admin",
-        "hostname": "WIN-01",
-        "process_name": "powershell.exe",
-        "command_line": "powershell.exe -EncodedCommand SQBFAFgA"
+        "event":
+            "process_execution",
+        "user":
+            "admin",
+        "hostname":
+            "WIN-01",
+        "process_name":
+            "powershell.exe",
+        "command_line":
+            "powershell.exe -EncodedCommand SQBFAFgA"
     })
 
+    #
     # Mimikatz
+    #
 
     logs.append({
-        "timestamp": 
+        "timestamp":
             (
                 base_time +
                 timedelta(minutes=10)
             ).isoformat(),
-            "event": "process_execution",
-            "user": "admin",
-            "hostname": "WIN-02",
-            "process_name": "mimikatz.exe",
-            "command_line": "mimikatz.exe"
+        "event":
+            "process_execution",
+        "user":
+            "admin",
+        "hostname":
+            "WIN-02",
+        "process_name":
+            "mimikatz.exe",
+        "command_line":
+            "mimikatz.exe"
     })
 
     return logs
+
 
 def save_logs():
 
@@ -189,7 +248,7 @@ def save_logs():
         "logs/authentication.json",
         "w"
     ) as file:
-        
+
         json.dump(
             auth_logs,
             file,
@@ -199,8 +258,8 @@ def save_logs():
     with open(
         "logs/endpoint.json",
         "w"
-    ) as files:
-        
+    ) as file:
+
         json.dump(
             endpoint_logs,
             file,
